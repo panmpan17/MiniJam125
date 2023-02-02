@@ -43,6 +43,7 @@ public class Bullet : MonoBehaviour, IPoolableObj
         if (collision.collider.CompareTag("Player"))
         {
             poolReference.IPrefabPool.PutGameObject(gameObject);
+            collision.collider.GetComponent<PlayerBehaviour>().OnTakeDamage();
         }
         else
         {

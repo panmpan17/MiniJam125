@@ -30,6 +30,15 @@ namespace MPack {
         }
 
         /// <summary>
+        /// Reset timer run timer to "RunTime - TargetTime"
+        /// </summary>
+        public void ContinuousReset(bool running = true)
+        {
+            RunTime -= TargetTime;
+            Running = running;
+        }
+
+        /// <summary>
         /// Reset timer run timer by cetain number
         /// </summary>
         /// <param name="amount"></param>

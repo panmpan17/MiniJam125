@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using MPack;
 
-public class FanSpreadBullet : MonoBehaviour
+public abstract class AbstractTriggerFire : MonoBehaviour
+{
+    public abstract void TriggerFire();
+}
+
+public class FanSpreadBullet : AbstractTriggerFire
 {
     [SerializeField]
     private Bullet bulletPrefab;
@@ -64,7 +69,7 @@ public class FanSpreadBullet : MonoBehaviour
         bullet.Shoot(transform.position, zRotation);
     }
 
-    public void TriggerFire()
+    public override void TriggerFire()
     {
         if (enabled)
             return;
@@ -75,7 +80,7 @@ public class FanSpreadBullet : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0, 0, _zAngle);
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Quaternion startRotation = Quaternion.Euler(0, 0, startAngle);
         Quaternion endRotation = Quaternion.Euler(0, 0, endAngle);

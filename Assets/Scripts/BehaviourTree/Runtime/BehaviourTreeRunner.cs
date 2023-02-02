@@ -15,9 +15,12 @@ namespace XnodeBehaviourTree
 
         private Blackboard _blackboard;
 
+        public System.Action<int> OnTriggerFire;
+
         void Start()
         {
             Context context = Context.Create(gameObject);
+            context.runner = this;
             _blackboard = new Blackboard();
 
             graph = (BehaviourTreeGraph) graph.Copy();
@@ -32,6 +35,11 @@ namespace XnodeBehaviourTree
         public void SetStage(int stageIndex)
         {
             _blackboard.Stage = stageIndex;
+        }
+
+        public void TriggerFireGroup(int index)
+        {
+            OnTriggerFire?.Invoke(index);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace XnodeBehaviourTree
     [CreateNodeMenu("BehaviourTree/Action/Trigger Fire")]
     public class TriggerFire : ActionNode
     {
+        public int TriggerGroupIndex;
         // public ValueWithEnable<int> TriggerGroupIndex;
         // public ValueWithEnable<int> CarriedParameter;
 
@@ -22,19 +23,20 @@ namespace XnodeBehaviourTree
 
         protected override State OnUpdate()
         {
+            context.runner.TriggerFireGroup(TriggerGroupIndex);
             // if (TriggerGroupIndex.Enable)
             // {
             //     if (CarriedParameter.Enable)
-            //         context.slimeBehaviour.TriggerFireGroup(TriggerGroupIndex.Value, CarriedParameter.Value);
+            //         context.runner.TriggerFireGroup(TriggerGroupIndex.Value, CarriedParameter.Value);
             //     else
-            //         context.slimeBehaviour.TriggerFireGroup(TriggerGroupIndex.Value);
+            //         context.runner.TriggerFireGroup(TriggerGroupIndex.Value);
             // }
             // else
             // {
             //     if (CarriedParameter.Enable)
-            //         context.slimeBehaviour.TriggerFire(CarriedParameter.Value);
+            //         context.runner.TriggerFire(CarriedParameter.Value);
             //     else
-            //         context.slimeBehaviour.TriggerFire();
+            //         context.runner.TriggerFire();
             // }
             return State.Success;
         }

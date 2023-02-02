@@ -207,6 +207,7 @@ GameObject:
   - component: {fileID: 45253799}
   - component: {fileID: 45253798}
   - component: {fileID: 45253800}
+  - component: {fileID: 45253801}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -279,6 +280,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 77396705}
+  - {fileID: 235651106}
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -294,7 +296,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3780c49495184cf6836ad39d2626f74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fanSpreadBullet: {fileID: 77396706}
+  behaviourTreeRunner: {fileID: 45253801}
+  triggerFires:
+  - {fileID: 77396706}
+  - {fileID: 235651105}
+--- !u!114 &45253801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45253797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4707a5f25befc441998ac2c89488f8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graph: {fileID: 11400000, guid: b3decf0b2768f41efb1ebde0a7cefa32, type: 2}
 --- !u!1 &77396704
 GameObject:
   m_ObjectHideFlags: 0
@@ -306,7 +324,7 @@ GameObject:
   - component: {fileID: 77396705}
   - component: {fileID: 77396706}
   m_Layer: 0
-  m_Name: A
+  m_Name: FanSpreadBullet (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -359,6 +377,7 @@ GameObject:
   - component: {fileID: 209947772}
   - component: {fileID: 209947777}
   - component: {fileID: 209947776}
+  - component: {fileID: 209947778}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -474,6 +493,69 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!210 &209947778
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 209947771}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+--- !u!1 &235651104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 235651106}
+  - component: {fileID: 235651105}
+  m_Layer: 0
+  m_Name: Bomb
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &235651105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235651104}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43b2a72d3a7ea4f5f882529f04e2e921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabPoolList: {fileID: 11400000, guid: ec0b3f537bd6e41e9ac63e5f0cb31d8e, type: 2}
+  boxSize: {x: 11, y: 7}
+  spawnCount: 4
+  spawnIntervalTimer:
+    TargetTime: 1
+    Running: 0
+    ReverseMode: 0
+  spawnOneRightAfterTrigger: 1
+--- !u!4 &235651106
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235651104}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -2.565, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 45253799}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &291636352
 GameObject:
   m_ObjectHideFlags: 0
@@ -946,8 +1028,8 @@ Camera:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 0.9997064
-    height: 1
+    width: 0.99941623
+    height: 0.99999994
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34

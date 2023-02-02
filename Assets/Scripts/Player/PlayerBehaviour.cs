@@ -33,4 +33,9 @@ public class PlayerBehaviour : MonoBehaviour
         _input.Scheme.Player.WeaponAttack1.performed -= weapon.OnAttackPerformed;
         _input.Scheme.Player.WeaponAttack1.canceled -= weapon.OnAttackCanceled;
     }
+
+    public void OnTakeDamage()
+    {
+        Debug.Log("Take damage");
+    }
 }

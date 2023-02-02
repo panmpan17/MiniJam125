@@ -7,6 +7,7 @@ namespace XnodeBehaviourTree
         public GameObject gameObject;
         public Transform transform;
         public Animator animator;
+        public BehaviourTreeRunner runner;
 
         public Rigidbody rigidbody => _rigidobdy == null ? gameObject.GetComponent<Rigidbody>() : _rigidobdy;
         private Rigidbody _rigidobdy;
