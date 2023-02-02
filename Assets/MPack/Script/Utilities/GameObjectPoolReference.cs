@@ -8,6 +8,7 @@ using MPack;
 public class GameObjectPoolReference : ScriptableObject
 {
     public GameObject Prefab;
+    public IPrefabPool IPrefabPool;
     public bool CreateCollection;
     public string CollectionName;
 

@@ -9,7 +9,16 @@ namespace MPack {
         void Reinstantiate();
     }
 
-    public class PrefabPool<T> where T: MonoBehaviour, IPoolableObj
+    public interface IPrefabPool
+    {
+        void ClearAliveObjects();
+        void ClearPoolObjects();
+        void ClearObjects();
+        void PutGameObject(GameObject gameObject);
+    }
+
+    public class PrefabPool<T>: IPrefabPool
+        where T: MonoBehaviour, IPoolableObj
     {
         public T Prefab;
 
@@ -107,6 +116,11 @@ namespace MPack {
             component.DeactivateObj(PoolCollection);
             AliveObjs.Remove(component);
             PoolObjs.Add(component);
+        }
+
+        public void PutGameObject(GameObject gameObject)
+        {
+            Put(gameObject.GetComponent<T>());
         }
     }
 
