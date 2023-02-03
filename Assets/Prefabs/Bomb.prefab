@@ -69,6 +69,10 @@ MonoBehaviour:
     TargetTime: 0.2
     Running: 0
     ReverseMode: 0
+  _oneSecondTimer:
+    TargetTime: 0.7
+    Running: 1
+    ReverseMode: 0
   effectLayer:
     Constant:
       serializedVersion: 2
@@ -90,7 +94,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1.38
+  m_Radius: 1.3
 --- !u!1 &7769133616892168814
 GameObject:
   m_ObjectHideFlags: 0

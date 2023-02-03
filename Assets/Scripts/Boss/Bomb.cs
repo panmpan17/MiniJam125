@@ -24,6 +24,7 @@ public class Bomb : MonoBehaviour
     private int _waitExplodeTimeLeft;
     [SerializeField]
     private Timer explodeDisapearTimer;
+    [SerializeField]
     private Timer _oneSecondTimer = new Timer(1);
 
     [SerializeField]
@@ -38,7 +39,6 @@ public class Bomb : MonoBehaviour
     void Awake()
     {
         _contactFilter = new ContactFilter2D {
-            useTriggers = true,
             useLayerMask = true,
             layerMask = effectLayer.Value,
         };
@@ -101,7 +101,7 @@ public class Bomb : MonoBehaviour
         var player = _colliders[0].GetComponent<PlayerBehaviour>();
         if (!player)
         {
-            Debug.Log(player);
+            Debug.Log(_colliders[0]);
             return;
         }
         player.OnTakeDamage();
