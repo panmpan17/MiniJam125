@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MPack.Aseprite;
 
 
 namespace MPack
@@ -8,14 +9,18 @@ namespace MPack
     [CreateAssetMenu(menuName = "MPack/Effect Reference", order = 0)]
     public class EffectReference : ScriptableObject
     {
-        public ParticleSystem Prefab;
+        public bool UseParticle;
+        public ParticleSystem ParticlePrefab;
+        public AseAnimator AseAnimatorPrefab;
 
         public Stack<ParticleSystem> Pools;
+        public Stack<AseAnimator> AseAnimatorPools;
         public Stack<EffectQueue> WaitingList;
 
         void OnEnable()
         {
             Pools = new Stack<ParticleSystem>();
+            AseAnimatorPools = new Stack<AseAnimator>();
             WaitingList = new Stack<EffectQueue>();
         }
 
@@ -28,13 +33,30 @@ namespace MPack
                     return particle;
             }
 
-            return GameObject.Instantiate(Prefab);
+            return GameObject.Instantiate(ParticlePrefab);
+        }
+
+        public AseAnimator GetFreshAseAnimatorEffect()
+        {
+            while (AseAnimatorPools.Count > 0)
+            {
+                AseAnimator particle = AseAnimatorPools.Pop();
+                if (particle != null)
+                    return particle;
+            }
+
+            return GameObject.Instantiate(AseAnimatorPrefab);
         }
 
         public void Put(ParticleSystem effect)
         {
             effect.Stop();
             Pools.Push(effect);
+        }
+        public void Put(AseAnimator effect)
+        {
+            effect.Stop();
+            AseAnimatorPools.Push(effect);
         }
 
         public void AddWaitingList(EffectQueue queue)

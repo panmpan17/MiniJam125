@@ -10,11 +10,17 @@ public class Bullet : MonoBehaviour, IPoolableObj
     private float speed;
     [SerializeField]
     private int maxCollideGroundCount;
+
+    [Header("Reference")]
     [SerializeField]
     private new Rigidbody2D rigidbody2D;
     [SerializeField]
     private GameObjectPoolReference poolReference;
     private int _collideGroundCount;
+    [SerializeField]
+    private EffectReference hitEffect;
+    [SerializeField]
+    private EffectReference disapearEffect;
 
 
     public void DeactivateObj(Transform collectionTransform)
@@ -52,9 +58,29 @@ public class Bullet : MonoBehaviour, IPoolableObj
             transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg - 90);
 
             if (++_collideGroundCount < maxCollideGroundCount)
+            {
+                OnRebound(collision);
                 return;
+            }
 
             poolReference.IPrefabPool.PutGameObject(gameObject);
+
+            if (disapearEffect)
+            {
+                ContactPoint2D contactPoint2D = collision.contacts[0];
+                Vector2 normal = contactPoint2D.normal;
+                disapearEffect.AddWaitingList(contactPoint2D.point, Quaternion.Euler(0, 0, Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90));
+            }
         }
+    }
+
+    void OnRebound(Collision2D collision)
+    {
+        if (!hitEffect)
+            return;
+
+        ContactPoint2D contactPoint2D = collision.contacts[0];
+        Vector2 normal = contactPoint2D.normal;
+        hitEffect.AddWaitingList(contactPoint2D.point, Quaternion.Euler(0, 0, Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90));
     }
 }
