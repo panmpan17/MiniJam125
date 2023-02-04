@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
 
 public class PlayerInput : MonoBehaviour
 {
@@ -12,6 +14,10 @@ public class PlayerInput : MonoBehaviour
             return _scheme;
         }
     }
+
+    public InputAction Move => Scheme.Player.Move;
+    public InputAction WeaponAttack1 => Scheme.Player.WeaponAttack1;
+    public InputAction Dash => Scheme.Player.Dash;
 
 
     void OnEnable()

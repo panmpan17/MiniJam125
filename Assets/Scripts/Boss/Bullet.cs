@@ -10,6 +10,8 @@ public class Bullet : MonoBehaviour, IPoolableObj
     private float speed;
     [SerializeField]
     private int maxCollideGroundCount;
+    [SerializeField]
+    private bool disapearWhenHitInvinciblePlayer;
 
     [Header("Reference")]
     [SerializeField]
@@ -48,29 +50,36 @@ public class Bullet : MonoBehaviour, IPoolableObj
     {
         if (collision.collider.CompareTag("Player"))
         {
+            bool isSuccess = collision.collider.GetComponent<PlayerBehaviour>().OnTakeDamage();
+
+            if (!disapearWhenHitInvinciblePlayer && !isSuccess)
+                return;
+
             poolReference.IPrefabPool.PutGameObject(gameObject);
-            collision.collider.GetComponent<PlayerBehaviour>().OnTakeDamage();
         }
         else
+            HandleCollideWithNonPlayer(collision);
+    }
+
+    void HandleCollideWithNonPlayer(Collision2D collision)
+    {
+        Vector2 velocity = rigidbody2D.velocity;
+
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg - 90);
+
+        if (++_collideGroundCount < maxCollideGroundCount)
         {
-            Vector2 velocity = rigidbody2D.velocity;
+            OnRebound(collision);
+            return;
+        }
 
-            transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg - 90);
+        poolReference.IPrefabPool.PutGameObject(gameObject);
 
-            if (++_collideGroundCount < maxCollideGroundCount)
-            {
-                OnRebound(collision);
-                return;
-            }
-
-            poolReference.IPrefabPool.PutGameObject(gameObject);
-
-            if (disapearEffect)
-            {
-                ContactPoint2D contactPoint2D = collision.contacts[0];
-                Vector2 normal = contactPoint2D.normal;
-                disapearEffect.AddWaitingList(contactPoint2D.point, Quaternion.Euler(0, 0, Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90));
-            }
+        if (disapearEffect)
+        {
+            ContactPoint2D contactPoint2D = collision.contacts[0];
+            Vector2 normal = contactPoint2D.normal;
+            disapearEffect.AddWaitingList(contactPoint2D.point, Quaternion.Euler(0, 0, Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90));
         }
     }
 

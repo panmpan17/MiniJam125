@@ -71,6 +71,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   maxCollideGroundCount: 2
+  disapearWhenHitInvinciblePlayer: 0
   rigidbody2D: {fileID: 1128479508492698739}
   poolReference: {fileID: 11400000, guid: 8366056de77334d84a24ccabd5af3d57, type: 2}
   hitEffect: {fileID: 11400000, guid: 890301bf755734c2fa19b5259497960a, type: 2}

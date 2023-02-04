@@ -87,6 +87,17 @@ public class Tentacle : MonoBehaviour
     }
 
 
+    void OnCollisionEnter2D(Collision2D collision2D)
+    {
+        // Debug.Log(collision2D.collider);
+        var player = collision2D.collider.GetComponent<PlayerBehaviour>();
+        if (player)
+        {
+            player.OnTakeDamage();
+        }
+    }
+
+
     public enum Direction { LeftToRight, RightToLeft, UpToDown, DownToUp }
     public enum TentacleState { Warning, Forward, Stay, Backward }
 }

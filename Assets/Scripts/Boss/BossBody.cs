@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MPack;
 
 public class BossBody : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private float damangeAmount;
+    [SerializeField]
+    private FloatEventReference bossDamageEvent;
 
-    // Update is called once per frame
-    void Update()
+    public void OnDamage()
     {
-        
+        bossDamageEvent.Invoke(damangeAmount);
     }
 }

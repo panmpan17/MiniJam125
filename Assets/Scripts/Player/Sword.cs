@@ -19,7 +19,11 @@ public class Sword : AbstractWeapon
     [SerializeField]
     private Transform swingEffect;
     [SerializeField]
+    private LayerMaskReference layerMaskReference;
+    [SerializeField]
     private Collider2D attackCollider;
+    private ContactFilter2D _contactFilter2D;
+    private Collider2D[] _attackTargetColliders = new Collider2D[5];
 
     [SerializeField]
     private SwingPose restPose;
@@ -42,6 +46,12 @@ public class Sword : AbstractWeapon
 
         swordSprite.localPosition = restPose.SwordLocalPosition;
         swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
+
+        _contactFilter2D = new ContactFilter2D {
+            useTriggers = false,
+            useLayerMask = true,
+            layerMask = layerMaskReference.Value,
+        };
     }
 
     void Update()
@@ -95,6 +105,7 @@ public class Sword : AbstractWeapon
 
                 _swingPoseIndex = 0;
                 SetPose(swingPoses[_swingPoseIndex]);
+                Attack();
                 break;
 
             case SwordSwingState.WaitNextSwing:
@@ -102,7 +113,22 @@ public class Sword : AbstractWeapon
 
                 _swingPoseIndex += 1;
                 SetPose(swingPoses[_swingPoseIndex]);
+                Attack();
                 break;
+        }
+    }
+
+    private void Attack()
+    {
+        Physics2D.OverlapCollider(attackCollider, _contactFilter2D, _attackTargetColliders);
+        for (int i = 0; i < _attackTargetColliders.Length; i++)
+        {
+            if (_attackTargetColliders[i] == null)
+                return;
+
+            var body = _attackTargetColliders[i].GetComponent<BossBody>();
+            if (body)
+                body.OnDamage();
         }
     }
 
