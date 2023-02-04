@@ -10,6 +10,17 @@ namespace MPack.Aseprite {
 
         public KeyPoint[] Points;
 
+        public float Duration {
+            get {
+                float duration = 0;
+                for (int i = 0; i < Points.Length; i++)
+                {
+                    duration += Points[i].Time;
+                }
+                return duration;
+            }
+        }
+
         public enum LoopAnimation : byte
         {
             Forward = 0,

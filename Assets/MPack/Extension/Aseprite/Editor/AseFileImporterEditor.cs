@@ -22,6 +22,13 @@ namespace AsepriteImporter
         {
             base.OnEnable();
             foldoutStates.Clear();
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            SceneView.duringSceneGui -= OnSceneGUI;
         }
 
 
@@ -270,6 +277,44 @@ namespace AsepriteImporter
             if (spritePivot.x == 1f && spritePivot.y == 0f) return 8;
 
             return spritePivotOptions.Length - 1; // Last one = custom
+        }
+    
+    
+        void OnSceneGUI(SceneView sceneView) {
+        
+            Event e = Event.current;
+    
+            if (e.type == EventType.DragUpdated)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                e.Use();
+            }
+            else if (e.type == EventType.DragPerform)
+            {
+                DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                DragAndDrop.AcceptDrag();
+                e.Use();
+
+                GameObject gameObject = new GameObject(target.name);
+                Vector3 position = sceneView.camera.ScreenToWorldPoint(e.mousePosition);
+
+                gameObject.transform.position = position;
+                var spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+
+                // var importer = serializedObject.targetObject as AseFileImporter;
+                // // string spriteSheet = AssetDatabase.GetAssetPath(DragAndDrop.paths[0]);
+                // Object[] sprites = AssetDatabase.LoadAllAssetsAtPath(DragAndDrop.paths[0]);
+                // spriteRenderer.sprite = (Sprite)sprites[0];
+
+                var animator = gameObject.AddComponent<Animator>();
+
+                // importer.textureSettings.
+                // importer.
+                // ass
+
+                // spriteRenderer.sprite = 
+                Selection.activeGameObject = gameObject;
+            }
         }
     }
 }

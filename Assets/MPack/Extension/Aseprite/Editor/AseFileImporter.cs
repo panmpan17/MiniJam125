@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 using Aseprite;
 using UnityEditor;
+using UnityEditor.Animations;
 using Aseprite.Chunks;
 using System.Text;
 using MPack.Aseprite;
@@ -106,7 +107,7 @@ namespace AsepriteImporter
             }
 
             GenerateAseAnimations(ctx, aseFile, sprites);
-            // GenerateAnimations(ctx, aseFile, sprites);
+            GenerateAnimations(ctx, aseFile, sprites);
         }
 
         private void ImportTileset(UnityEditor.AssetImporters.AssetImportContext ctx, Texture2D atlas)
@@ -319,6 +320,14 @@ namespace AsepriteImporter
             }
 
             animationSettings = animSettings.ToArray();
+
+            // CreateAnimator(ctx, aseFile);
+        }
+
+        void CreateAnimator(UnityEditor.AssetImporters.AssetImportContext ctx, AseFile aseFile)
+        {
+            // RuntimeAnimatorController controller = UnityEditor.Animations.;
+            // CelExtraChunk.ad
         }
 
         private void RemoveUnusedAnimationSettings(List<AseFileAnimationSettings> animationSettings,

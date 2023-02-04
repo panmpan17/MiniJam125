@@ -4,18 +4,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
+using System.Reflection;
 
 namespace MPack.Aseprite {
     public class AseAnimator : MonoBehaviour
     {
+        [property: SerializeField] public bool UseScaleTime { get; set; }
+
         [SerializeField]
         private AseAnimation[] animations;
+        [SerializeField]
+        private Light2D light2D;
+        private FieldInfo _LightCookieSprite = typeof(Light2D).GetField("m_LightCookieSprite", BindingFlags.NonPublic | BindingFlags.Instance);
         private int animI = -1, animKeyI;
         private float timer;
         private bool stop;
 
         private SpriteRenderer spriteRenderer;
-        private Image image;
+        // private Image image;
 
         private void Awake()
         {
@@ -42,19 +49,38 @@ namespace MPack.Aseprite {
                     }
                 }
 
-                spriteRenderer.sprite = animations[animI].Points[animKeyI].Sprite;
+                Sprite sprite = animations[animI].Points[animKeyI].Sprite;
+                spriteRenderer.sprite = sprite;
+                if (light2D)
+                    _LightCookieSprite.SetValue(light2D, sprite);
             }
         }
 
         public void Play(int index) {
-            if (animI == index)
+            if (!stop && animI == index)
                 return;
 
             animI = index;
             animKeyI = 0;
 
             stop = false;
-            spriteRenderer.sprite = animations[animI].Points[animKeyI].Sprite;
+
+            Sprite sprite = animations[animI].Points[animKeyI].Sprite;
+            spriteRenderer.sprite = sprite;
+            if (light2D)
+            {
+                light2D.enabled = false;
+                _LightCookieSprite.SetValue(light2D, sprite);
+            }
+        }
+
+        public void Stop()
+        {
+            stop = true;
+            spriteRenderer.sprite = null;
+
+            if (light2D)
+                light2D.enabled = false;
         }
 
         public void PlayAnimation(string name)
@@ -88,5 +114,7 @@ namespace MPack.Aseprite {
             stop = false;
             spriteRenderer.sprite = animations[animI].Points[animKeyI].Sprite;
         }
+
+        public float GetAnimationDuration(int index) => animations[animI].Duration;
     }
 }
