@@ -13,7 +13,7 @@ namespace XnodeBehaviourTree
         [SerializeField]
         private BehaviourTreeGraph graph;
 
-        private Blackboard _blackboard;
+        private Blackboard _blackboard = new Blackboard();
 
         public System.Action<int> OnTriggerFire;
 
@@ -21,7 +21,6 @@ namespace XnodeBehaviourTree
         {
             Context context = Context.Create(gameObject);
             context.runner = this;
-            _blackboard = new Blackboard();
 
             graph = (BehaviourTreeGraph) graph.Copy();
             graph.OnInitial(context, _blackboard);

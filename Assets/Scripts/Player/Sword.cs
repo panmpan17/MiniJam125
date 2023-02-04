@@ -19,6 +19,8 @@ public class Sword : AbstractWeapon
     [SerializeField]
     private Transform swingEffect;
     [SerializeField]
+    private TrailRenderer swingTrail;
+    [SerializeField]
     private LayerMaskReference layerMaskReference;
     [SerializeField]
     private Collider2D attackCollider;
@@ -29,8 +31,13 @@ public class Sword : AbstractWeapon
     private SwingPose restPose;
 
     [SerializeField]
-    private SwingPose[] swingPoses;
-    private int _swingPoseIndex;
+    private SwingPose[] poses;
+    private SwingPose _startPos;
+    private SwingPose _endPos;
+
+    [SerializeField]
+    private SwingAnimation[] swingPoses;
+    private int _swingAnimationIndex;
     private Timer timer;
     // [SerializeField]
     // private Timer allSwingEndRestTimer;
@@ -43,6 +50,7 @@ public class Sword : AbstractWeapon
     void Awake()
     {
         swingEffect.gameObject.SetActive(false);
+        swingTrail.emitting = false;
 
         swordSprite.localPosition = restPose.SwordLocalPosition;
         swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
@@ -62,12 +70,16 @@ public class Sword : AbstractWeapon
                 break;
 
             case SwordSwingState.Swing:
+                swordSprite.localPosition = Vector3.Lerp(_startPos.SwordLocalPosition, _endPos.SwordLocalPosition, timer.Progress);
+                swordSprite.localRotation = Quaternion.Euler(Vector3.Lerp(_startPos.SwordLocalRotation, _endPos.SwordLocalRotation, timer.Progress));
+
                 if (!timer.UpdateEnd)
                     break;
                 
                 swingEffect.gameObject.SetActive(false);
+                swingTrail.emitting = false;
 
-                if (_swingPoseIndex == swingPoses.Length - 1)
+                if (_swingAnimationIndex == swingPoses.Length - 1)
                 {
                     _swingState = SwordSwingState.WaitColddown;
                     timer.TargetTime = allSwingPoseEndRest;
@@ -76,7 +88,7 @@ public class Sword : AbstractWeapon
                 }
 
                 _swingState = SwordSwingState.WaitNextSwing;
-                timer.TargetTime = swingPoses[_swingPoseIndex].WaitNextSwingDetect;
+                timer.TargetTime = swingPoses[_swingAnimationIndex].WaitNextSwingDetect;
                 timer.Reset();
                 break;
 
@@ -91,6 +103,7 @@ public class Sword : AbstractWeapon
                 swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
 
                 swingEffect.gameObject.SetActive(false);
+                swingTrail.emitting = false;
                 break;
         }
     }
@@ -98,27 +111,30 @@ public class Sword : AbstractWeapon
 
     public override void OnAttackStarted(CallbackContext callbackContext)
     {
+        SwingAnimation animation;
         switch (_swingState)
         {
             case SwordSwingState.None:
                 _swingState = SwordSwingState.Swing;
 
-                _swingPoseIndex = 0;
-                SetPose(swingPoses[_swingPoseIndex]);
-                Attack();
+                _swingAnimationIndex = 0;
+                animation = swingPoses[_swingAnimationIndex];
+                SetPose(animation);
+                Attack(animation.DamageMultiplier);
                 break;
 
             case SwordSwingState.WaitNextSwing:
                 _swingState = SwordSwingState.Swing;
 
-                _swingPoseIndex += 1;
-                SetPose(swingPoses[_swingPoseIndex]);
-                Attack();
+                _swingAnimationIndex += 1;
+                animation = swingPoses[_swingAnimationIndex];
+                SetPose(animation);
+                Attack(animation.DamageMultiplier);
                 break;
         }
     }
 
-    private void Attack()
+    private void Attack(float damageMultiplier)
     {
         Physics2D.OverlapCollider(attackCollider, _contactFilter2D, _attackTargetColliders);
         for (int i = 0; i < _attackTargetColliders.Length; i++)
@@ -128,19 +144,23 @@ public class Sword : AbstractWeapon
 
             var body = _attackTargetColliders[i].GetComponent<BossBody>();
             if (body)
-                body.OnDamage();
+                body.OnDamage(damageMultiplier);
         }
     }
 
-    void SetPose(SwingPose pose)
+    void SetPose(SwingAnimation animation)
     {
-        swordSprite.localPosition = pose.SwordLocalPosition;
-        swordSprite.localRotation = Quaternion.Euler(pose.SwordLocalRotation);
+        _startPos = poses[animation.StartPoseIndex];
+        _endPos = poses[animation.EndPoseIndex];
 
-        swingEffect.localScale = pose.SwingEffectLocalScale;
+        swordSprite.localPosition = _startPos.SwordLocalPosition;
+        swordSprite.localRotation = Quaternion.Euler(_startPos.SwordLocalRotation);
+        swingEffect.localScale = _startPos.SwingEffectLocalScale;
+
         swingEffect.gameObject.SetActive(true);
+        swingTrail.emitting = true;
 
-        timer.TargetTime = pose.SwingWait;
+        timer.TargetTime = animation.SwingWait;
         timer.Reset();
     }
 
@@ -164,9 +184,17 @@ public class Sword : AbstractWeapon
         public Vector3 SwordLocalRotation;
 
         public Vector3 SwingEffectLocalScale;
-        // public Vector3 SwordLocalRotation;
+    }
+
+    [System.Serializable]
+    public struct SwingAnimation
+    {
+        public int StartPoseIndex;
+        public int EndPoseIndex;
 
         public float SwingWait;
         public float WaitNextSwingDetect;
+        [Range(0.5f, 1.5f)]
+        public float DamageMultiplier;
     }
 }

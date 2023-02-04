@@ -37,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
     public event System.Action OnDashStartedEvent;
     public event System.Action OnDashEndedEvent;
 
+    public event System.Action<Facing> OnFacingChanged;
+
     private PlayerInput _input;
     private Facing _facing = Facing.Up;
 
@@ -148,6 +150,8 @@ public class PlayerMovement : MonoBehaviour
                 transform.rotation = rightRotation;
                 break;
         }
+
+        OnFacingChanged?.Invoke(newFacing);
     }
 
 

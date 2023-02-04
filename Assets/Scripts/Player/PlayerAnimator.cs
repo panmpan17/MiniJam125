@@ -9,7 +9,15 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField]
     private PlayerBehaviour behaviour;
     [SerializeField]
+    private PlayerMovement movement;
+    [SerializeField]
     private SpriteRenderer spriteRenderer;
+    [SerializeField]
+    private Sprite upSprite;
+    [SerializeField]
+    private Sprite downSprite;
+    [SerializeField]
+    private Sprite sideSprite;
 
     [Header("Hurt")]
     [SerializeField]
@@ -24,6 +32,7 @@ public class PlayerAnimator : MonoBehaviour
     void OnEnable()
     {
         behaviour.OnHurt += OnHurt;
+        movement.OnFacingChanged += OnFacingChanged;
     }
 
     void Update()
@@ -53,5 +62,30 @@ public class PlayerAnimator : MonoBehaviour
     void OnHurt()
     {
         hurtTimer.Reset();
+    }
+
+    void OnFacingChanged(PlayerMovement.Facing facing)
+    {
+        switch (facing)
+        {
+            case PlayerMovement.Facing.Up:
+                spriteRenderer.sprite = upSprite;
+                transform.rotation = Quaternion.identity;
+                break;
+            case PlayerMovement.Facing.Down:
+                spriteRenderer.sprite = downSprite;
+                transform.rotation = Quaternion.identity;
+                break;
+            case PlayerMovement.Facing.Left:
+                spriteRenderer.sprite = sideSprite;
+                transform.localScale = Vector3.one;
+                transform.rotation = Quaternion.identity;
+                break;
+            case PlayerMovement.Facing.Right:
+                spriteRenderer.sprite = sideSprite;
+                transform.localScale = new Vector3(-1, 1, 1);
+                transform.rotation = Quaternion.identity;
+                break;
+        }
     }
 }

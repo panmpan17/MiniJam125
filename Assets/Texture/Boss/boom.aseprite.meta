@@ -26,7 +26,10 @@ ScriptedImporter:
   animationSettings:
   - animationName: boom
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 4"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 2; To: 6"
+  - animationName: flash
+    loopTime: 1
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 1"
   atlas: {instanceID: 0}
   importType: 0
   bindType: 0

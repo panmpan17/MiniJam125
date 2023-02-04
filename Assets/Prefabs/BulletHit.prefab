@@ -100,3 +100,4 @@ MonoBehaviour:
   animations:
   - {fileID: -2531241420706614620, guid: 3eede7dd1f9fd42daaed05692c87fe69, type: 3}
   light2D: {fileID: 0}
+  spriteRenderer: {fileID: 6128358974313706063}

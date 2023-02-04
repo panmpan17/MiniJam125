@@ -20,13 +20,16 @@ namespace MPack.Aseprite {
         private int animI = -1, animKeyI;
         private float timer;
         private bool stop;
+        public bool IsStopped => stop;
 
+        [SerializeField]
         private SpriteRenderer spriteRenderer;
         // private Image image;
 
         private void Awake()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (!spriteRenderer)
+                spriteRenderer = GetComponent<SpriteRenderer>();
             Play(0);
         }
 

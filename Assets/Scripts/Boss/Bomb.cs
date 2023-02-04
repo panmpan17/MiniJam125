@@ -2,30 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MPack;
+using MPack.Aseprite;
 using TMPro;
 
 
 public class Bomb : MonoBehaviour
 {
     [SerializeField]
-    private GameObject bomb;
-    [SerializeField]
-    private TextMeshPro timeLeftText;
-    [SerializeField]
-    private GameObject explodeEffect;
-    [SerializeField]
     private GameObjectPoolReference gameObjectPool;
     [SerializeField]
     private Collider2D explosionCollider;
+    [SerializeField]
+    private AseAnimator animator;
 
     [Header("Parameter")]
     [SerializeField]
-    private int waitExplodeTime;
-    private int _waitExplodeTimeLeft;
-    [SerializeField]
-    private Timer explodeDisapearTimer;
-    [SerializeField]
-    private Timer _oneSecondTimer = new Timer(1);
+    private Timer waitExplodeTimer;
+    private Timer _explodeDisapearTimer;
 
     [SerializeField]
     private LayerMaskReference effectLayer;
@@ -66,23 +59,14 @@ public class Bomb : MonoBehaviour
 
     private void UpdateWaitToExplode()
     {
-        if (!_oneSecondTimer.UpdateEnd)
+        if (!waitExplodeTimer.UpdateEnd)
             return;
-        _oneSecondTimer.ContinuousReset();
-
-        _waitExplodeTimeLeft--;
-        if (_waitExplodeTimeLeft > 0)
-        {
-            timeLeftText.text = _waitExplodeTimeLeft.ToString();
-            return;
-        }
-
         Explode();
     }
 
     void UpdateWaitExplodeEnd()
     {
-        if (!explodeDisapearTimer.UpdateEnd)
+        if (!_explodeDisapearTimer.UpdateEnd)
             return;
 
         gameObjectPool.Put(gameObject);
@@ -90,9 +74,9 @@ public class Bomb : MonoBehaviour
 
     void Explode()
     {
-        bomb.SetActive(false);
-        explodeEffect.SetActive(true);
         _state = BombState.WaitExplodeEnd;
+
+        animator.Play(1);
 
         Physics2D.OverlapCollider(explosionCollider, _contactFilter, _colliders);
         if (_colliders[0] == null)
@@ -109,14 +93,11 @@ public class Bomb : MonoBehaviour
 
     public void Place()
     {
-        bomb.SetActive(true);
-        explodeEffect.SetActive(false);
-
-        _waitExplodeTimeLeft = waitExplodeTime;
-        timeLeftText.text = _waitExplodeTimeLeft.ToString();
         _state = BombState.WaitToExplode;
+        animator.Play(0);
 
-        _oneSecondTimer.Reset();
-        explodeDisapearTimer.Reset();
+        waitExplodeTimer.Reset();
+        _explodeDisapearTimer.TargetTime = animator.GetAnimationDuration(1);
+        _explodeDisapearTimer.Reset();
     }
 }

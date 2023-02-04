@@ -10,8 +10,8 @@ public class BossBody : MonoBehaviour
     [SerializeField]
     private FloatEventReference bossDamageEvent;
 
-    public void OnDamage()
+    public void OnDamage(float multiplier=1f)
     {
-        bossDamageEvent.Invoke(damangeAmount);
+        bossDamageEvent.Invoke(damangeAmount * multiplier);
     }
 }
