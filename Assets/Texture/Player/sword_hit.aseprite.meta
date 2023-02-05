@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 526a72e61e5624d0cb1713c7ffb91918
+guid: a1015d8d56ad844b193180dc74849bd5
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -16,7 +16,7 @@ ScriptedImporter:
     transparentColor: {r: 1, g: 0, b: 1, a: 1}
     meshType: 1
     extrudeEdges: 1
-    spritePivot: {x: 0, y: 0.5}
+    spritePivot: {x: 0.5, y: 0.5}
     generatePhysics: 1
     wrapMode: 1
     filterMode: 0
@@ -24,9 +24,9 @@ ScriptedImporter:
     tilePadding: {x: 0, y: 0}
     tileOffset: {x: 0, y: 0}
   animationSettings:
-  - animationName: Dash
+  - animationName: Swing
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 5"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 6"
   atlas: {instanceID: 0}
   importType: 0
   bindType: 0

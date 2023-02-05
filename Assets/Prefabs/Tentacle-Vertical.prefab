@@ -476,7 +476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f182b08e8bef417bb363b8b0e05fd5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damangeAmount: 1
+  damangeAmount: 0.1
   bossDamageEvent: {fileID: 11400000, guid: f4cb28116115a42d89e30de70ce1fdf3, type: 2}
 --- !u!1 &7224632477792405548
 GameObject:

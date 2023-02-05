@@ -5,6 +5,13 @@ using MPack;
 
 public class BossEyeBall : MonoBehaviour
 {
+    [Header("Drop & Raise")]
+    [SerializeField]
+    private Vector3 raisedPosition;
+    [SerializeField]
+    private Vector3 droppedPosition;
+    private bool _isDropped = false;
+
     [Header("Attack Hint")]
     [SerializeField]
     private GameObject canonPattern;
@@ -110,6 +117,11 @@ public class BossEyeBall : MonoBehaviour
                 eyeWhite.sprite = rightEyeWhiteSprites[_eyeWhiteIndex];
                 break;
         }
+
+        if (_isDropped)
+        {
+            Raise();
+        }
     }
 
     public void ChangeToMode(BossBehaviour.BossAttackMode attackMode)
@@ -148,6 +160,22 @@ public class BossEyeBall : MonoBehaviour
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(value);
     }
+
+
+    public void Drop()
+    {
+        transform.position = droppedPosition;
+        _isDropped = true;
+        // body.DamageAmount = droppedDamageAmount;
+    }
+
+    public void Raise()
+    {
+        transform.position = raisedPosition;
+        _isDropped = false;
+        // body.DamageAmount = raisedDamageAmount;
+    }
+
 
     void OnDrawGizmosSelected()
     {

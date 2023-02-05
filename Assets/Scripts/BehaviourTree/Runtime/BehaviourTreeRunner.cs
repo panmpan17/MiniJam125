@@ -16,6 +16,7 @@ namespace XnodeBehaviourTree
         private Blackboard _blackboard = new Blackboard();
 
         public System.Action<int> OnTriggerFire;
+        public System.Action<string> OnOutsideFunctionCalled;
 
         void Start()
         {
@@ -39,6 +40,11 @@ namespace XnodeBehaviourTree
         public void TriggerFireGroup(int index)
         {
             OnTriggerFire?.Invoke(index);
+        }
+
+        public void InvokeFunction(string functionName)
+        {
+            OnOutsideFunctionCalled?.Invoke(functionName);
         }
     }
 }

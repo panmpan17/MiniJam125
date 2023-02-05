@@ -48,6 +48,7 @@ namespace MPack.Aseprite {
                         animKeyI = 0;
                     else {
                         stop = true;
+                        spriteRenderer.sprite = null;
                         return;
                     }
                 }

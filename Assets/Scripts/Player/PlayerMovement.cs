@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MPack;
+using MPack.Aseprite;
 using CallbackContext = UnityEngine.InputSystem.InputAction.CallbackContext;
 
 
@@ -31,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private AnimationCurveReference dashForceCurve;
     [SerializeField]
     private Timer dashColddownTimer;
+    [SerializeField]
+    private AseAnimator dashEffect;
     private bool _dashing;
     private Vector2 _dashDirection;
 
@@ -40,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     public event System.Action<Facing> OnFacingChanged;
 
     private PlayerInput _input;
+    private PlayerBehaviour _behaviour;
     private Facing _facing = Facing.Up;
 
     private Vector2 _moveDirection;
@@ -48,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     void Awake()
     {
         _input = GetComponent<PlayerInput>();
+        _behaviour = GetComponent<PlayerBehaviour>();
     }
 
     void OnEnable()
@@ -55,6 +60,8 @@ public class PlayerMovement : MonoBehaviour
         _input.Move.performed += OnMovePerformed;
         _input.Move.canceled += OnCancelPerformed;
         _input.Dash.started += OnDashStarted;
+        dashEffect.enabled = false;
+        dashEffect.Stop();
     }
 
     void OnDisable()
@@ -165,6 +172,8 @@ public class PlayerMovement : MonoBehaviour
             return;
         if (dashColddownTimer.Running)
             return;
+        if (!_behaviour.HasEnergy)
+            return;
 
         if (_moveDirection.x == 0 && _moveDirection.y == 0)
         {
@@ -190,6 +199,10 @@ public class PlayerMovement : MonoBehaviour
         _dashing = true;
         dashTimer.Reset();
         OnDashStartedEvent?.Invoke();
+        _behaviour.UseEnergy();
+
+        dashEffect.enabled = true;
+        dashEffect.Play(0);
     }
 #endregion
 

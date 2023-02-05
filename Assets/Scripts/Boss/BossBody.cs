@@ -7,6 +7,7 @@ public class BossBody : MonoBehaviour
 {
     [SerializeField]
     private float damangeAmount;
+    public float DamageAmount { get => damangeAmount; set { damangeAmount = value; } }
     [SerializeField]
     private FloatEventReference bossDamageEvent;
 

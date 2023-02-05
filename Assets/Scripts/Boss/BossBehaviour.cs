@@ -28,10 +28,12 @@ public class BossBehaviour : MonoBehaviour
 
     [Header("Stage")]
     [SerializeField]
+    private float stageChangedWaitTime;
+    [SerializeField]
     private float stage2Health;
     [SerializeField]
     private float stage3Health;
-    private int stage = 0;
+    private int _stage = 0;
     [SerializeField]
     private IntEventReference stageEvent;
 
@@ -40,6 +42,7 @@ public class BossBehaviour : MonoBehaviour
     void Awake()
     {
         behaviourTreeRunner.OnTriggerFire += OnTriggerFire;
+        behaviourTreeRunner.OnOutsideFunctionCalled += OnFunctionCalled;
 
         _healthPoint = maxHealthPoint;
         healthPointPercentageUpdateEvent.Invoke(1);
@@ -62,6 +65,22 @@ public class BossBehaviour : MonoBehaviour
         eyeBall.ChangeToMode((BossAttackMode) index);
     }
 
+    void OnFunctionCalled(string functionName)
+    {
+        // Debug.Log(functionName);
+        switch (functionName)
+        {
+            case "EyeDrop":
+                eyeBall.Drop();
+                break;
+
+            case "EyeRaise":
+                eyeBall.Raise();
+                break;
+        }
+    }
+
+
     void OnDamage(float amount)
     {
         _healthPoint -= amount;
@@ -73,25 +92,34 @@ public class BossBehaviour : MonoBehaviour
             return;
         }
 
-        if (stage == 0)
+        if (_stage == 0)
         {
             if (_healthPoint <= stage2Health)
-            {
-                stage = 1;
-                stageEvent.Invoke(stage);
-            }
+                ChangeStage(1);
         }
-        else if (stage == 1)
+        else if (_stage == 1)
         {
             if (_healthPoint <= stage3Health)
-            {
-                stage = 2;
-                stageEvent.Invoke(stage);
-            }
+                ChangeStage(2);
         }
 
         healthPointPercentageUpdateEvent.Invoke(_healthPoint / maxHealthPoint);
     }
+
+    void ChangeStage(int stage)
+    {
+        _stage = stage;
+        stageEvent.Invoke(_stage);
+        StartCoroutine(PauseBehaviourRunner());
+    }
+
+    IEnumerator PauseBehaviourRunner()
+    {
+        behaviourTreeRunner.enabled = false;
+        yield return new WaitForSeconds(stageChangedWaitTime);
+        behaviourTreeRunner.enabled = true;
+    }
+
 
     public enum BossAttackMode { Bullet, Bomb, Tentacle, Canon }
 }

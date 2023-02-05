@@ -39,10 +39,6 @@ public class Sword : AbstractWeapon
     private SwingAnimation[] swingPoses;
     private int _swingAnimationIndex;
     private Timer timer;
-    // [SerializeField]
-    // private Timer allSwingEndRestTimer;
-    [SerializeField]
-    private float allSwingPoseEndRest;
 
     private SwordSwingState _swingState;
 
@@ -79,13 +75,14 @@ public class Sword : AbstractWeapon
                 swingEffect.gameObject.SetActive(false);
                 swingTrail.emitting = false;
 
-                if (_swingAnimationIndex == swingPoses.Length - 1)
-                {
-                    _swingState = SwordSwingState.WaitColddown;
-                    timer.TargetTime = allSwingPoseEndRest;
-                    timer.Reset();
+                _swingState = SwordSwingState.SwingWait;
+                timer.TargetTime = swingPoses[_swingAnimationIndex].SwingWait;
+                timer.Reset();
+                break;
+
+            case SwordSwingState.SwingWait:
+                if (!timer.UpdateEnd)
                     break;
-                }
 
                 _swingState = SwordSwingState.WaitNextSwing;
                 timer.TargetTime = swingPoses[_swingAnimationIndex].WaitNextSwingDetect;
@@ -93,7 +90,6 @@ public class Sword : AbstractWeapon
                 break;
 
             case SwordSwingState.WaitNextSwing:
-            case SwordSwingState.WaitColddown:
                 if (!timer.UpdateEnd)
                     break;
 
@@ -127,6 +123,9 @@ public class Sword : AbstractWeapon
                 _swingState = SwordSwingState.Swing;
 
                 _swingAnimationIndex += 1;
+                if (_swingAnimationIndex >= swingPoses.Length)
+                    _swingAnimationIndex = 0;
+
                 animation = swingPoses[_swingAnimationIndex];
                 SetPose(animation);
                 Attack(animation.DamageMultiplier);
@@ -160,7 +159,7 @@ public class Sword : AbstractWeapon
         swingEffect.gameObject.SetActive(true);
         swingTrail.emitting = true;
 
-        timer.TargetTime = animation.SwingWait;
+        timer.TargetTime = animation.SwingDuration;
         timer.Reset();
     }
 
@@ -174,7 +173,7 @@ public class Sword : AbstractWeapon
 
     public enum SwordSwingState
     {
-        None, Swing, WaitNextSwing, WaitColddown
+        None, Swing, SwingWait, WaitNextSwing //, WaitColddown
     }
 
     [System.Serializable]
@@ -192,6 +191,7 @@ public class Sword : AbstractWeapon
         public int StartPoseIndex;
         public int EndPoseIndex;
 
+        public float SwingDuration;
         public float SwingWait;
         public float WaitNextSwingDetect;
         [Range(0.5f, 1.5f)]
