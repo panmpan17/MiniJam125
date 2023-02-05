@@ -24,13 +24,16 @@ namespace MPack.Aseprite {
 
         [SerializeField]
         private SpriteRenderer spriteRenderer;
-        // private Image image;
+        [SerializeField]
+        private Image image;
 
         private void Awake()
         {
             if (!spriteRenderer)
                 spriteRenderer = GetComponent<SpriteRenderer>();
-            Play(0);
+            
+            if (enabled)
+                Play(0);
         }
 
         private void Update()
@@ -48,16 +51,22 @@ namespace MPack.Aseprite {
                         animKeyI = 0;
                     else {
                         stop = true;
-                        spriteRenderer.sprite = null;
+                        SetSprite(null);
                         return;
                     }
                 }
 
                 Sprite sprite = animations[animI].Points[animKeyI].Sprite;
-                spriteRenderer.sprite = sprite;
+                SetSprite(sprite);
                 if (light2D)
                     _LightCookieSprite.SetValue(light2D, sprite);
             }
+        }
+
+        void SetSprite(Sprite sprite)
+        {
+            if (spriteRenderer) spriteRenderer.sprite = sprite;
+            if (image) image.sprite = sprite;
         }
 
         public void Play(int index) {
@@ -70,7 +79,7 @@ namespace MPack.Aseprite {
             stop = false;
 
             Sprite sprite = animations[animI].Points[animKeyI].Sprite;
-            spriteRenderer.sprite = sprite;
+            SetSprite(sprite);
             if (light2D)
             {
                 light2D.enabled = false;
@@ -81,7 +90,7 @@ namespace MPack.Aseprite {
         public void Stop()
         {
             stop = true;
-            spriteRenderer.sprite = null;
+            SetSprite(null);
 
             if (light2D)
                 light2D.enabled = false;
@@ -116,7 +125,7 @@ namespace MPack.Aseprite {
             animKeyI = 0;
 
             stop = false;
-            spriteRenderer.sprite = animations[animI].Points[animKeyI].Sprite;
+            SetSprite(animations[animI].Points[animKeyI].Sprite);
         }
 
         public float GetAnimationDuration(int index) => animations[animI].Duration;

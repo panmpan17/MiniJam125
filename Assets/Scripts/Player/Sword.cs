@@ -10,14 +10,17 @@ public abstract class AbstractWeapon : MonoBehaviour
     public abstract void OnAttackStarted(CallbackContext callbackContext);
     public abstract void OnAttackPerformed(CallbackContext callbackContext);
     public abstract void OnAttackCanceled(CallbackContext callbackContext);
+
+    public abstract void OnPlayerFacingChanged(PlayerMovement.Facing newFacing);
 }
 
 public class Sword : AbstractWeapon
 {
     [SerializeField]
-    private Transform swordSprite;
+    private SpriteRenderer swordSprite;
+    private Transform _swordSpriteTransform;
     [SerializeField]
-    private Transform swingEffect;
+    private Transform spriteOffsetControl;
     [SerializeField]
     private EffectReference swingEffects;
     [SerializeField]
@@ -32,6 +35,7 @@ public class Sword : AbstractWeapon
     private ContactFilter2D _contactFilter2D;
     private Collider2D[] _attackTargetColliders = new Collider2D[5];
 
+    [Header("Swing Pose")]
     [SerializeField]
     private SwingPose restPose;
 
@@ -45,15 +49,23 @@ public class Sword : AbstractWeapon
     private int _swingAnimationIndex;
     private Timer timer;
 
+    [SerializeField]
+    private Vector3 upOffsetLocalPosition;
+    [SerializeField]
+    private Vector3 downOffsetLocalPosition;
+    [SerializeField]
+    private Vector3 leftOffsetLocalPosition;
+    [SerializeField]
+    private Vector3 rightOffsetLocalPosition;
+
     private SwordSwingState _swingState;
 
 
     void Awake()
     {
-        swingEffect.gameObject.SetActive(false);
-
-        swordSprite.localPosition = restPose.SwordLocalPosition;
-        swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
+        _swordSpriteTransform = swordSprite.transform;
+        _swordSpriteTransform.localPosition = restPose.SwordLocalPosition;
+        _swordSpriteTransform.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
 
         _contactFilter2D = new ContactFilter2D {
             useTriggers = false,
@@ -70,14 +82,12 @@ public class Sword : AbstractWeapon
                 break;
 
             case SwordSwingState.Swing:
-                swordSprite.localPosition = Vector3.Lerp(_startPos.SwordLocalPosition, _endPos.SwordLocalPosition, timer.Progress);
-                swordSprite.localRotation = Quaternion.Euler(Vector3.Lerp(_startPos.SwordLocalRotation, _endPos.SwordLocalRotation, timer.Progress));
+                _swordSpriteTransform.localPosition = Vector3.Lerp(_startPos.SwordLocalPosition, _endPos.SwordLocalPosition, timer.Progress);
+                _swordSpriteTransform.localRotation = Quaternion.Euler(Vector3.Lerp(_startPos.SwordLocalRotation, _endPos.SwordLocalRotation, timer.Progress));
 
                 if (!timer.UpdateEnd)
                     break;
                 
-                swingEffect.gameObject.SetActive(false);
-
                 _swingState = SwordSwingState.SwingWait;
                 timer.TargetTime = swingPoses[_swingAnimationIndex].SwingWait;
                 timer.Reset();
@@ -98,10 +108,8 @@ public class Sword : AbstractWeapon
 
                 _swingState = SwordSwingState.None;
 
-                swordSprite.localPosition = restPose.SwordLocalPosition;
-                swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
-
-                swingEffect.gameObject.SetActive(false);
+                _swordSpriteTransform.localPosition = restPose.SwordLocalPosition;
+                _swordSpriteTransform.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
                 break;
         }
     }
@@ -157,7 +165,7 @@ public class Sword : AbstractWeapon
     {
         Vector3 position = swingEffectSpawnPoint.position;
 
-        Vector3 delta = (swordSprite.position - position);
+        Vector3 delta = (_swordSpriteTransform.position - position);
         Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg - 90);
         spillBlodEffect.AddWaitingList(position, rotation);
     }
@@ -167,11 +175,9 @@ public class Sword : AbstractWeapon
         _startPos = poses[animation.StartPoseIndex];
         _endPos = poses[animation.EndPoseIndex];
 
-        swordSprite.localPosition = _startPos.SwordLocalPosition;
-        swordSprite.localRotation = Quaternion.Euler(_startPos.SwordLocalRotation);
-        // swingEffect.localScale = _startPos.SwingEffectLocalScale;
+        _swordSpriteTransform.localPosition = _startPos.SwordLocalPosition;
+        _swordSpriteTransform.localRotation = Quaternion.Euler(_startPos.SwordLocalRotation);
 
-        // swingEffect.gameObject.SetActive(true);
         swingEffects.AddWaitingList(new EffectReference.EffectQueue {
             Position = swingEffectSpawnPoint.position,
             Rotation = transform.rotation,
@@ -189,6 +195,31 @@ public class Sword : AbstractWeapon
     public override void OnAttackCanceled(CallbackContext callbackContext)
     {
     }
+
+
+    public override void OnPlayerFacingChanged(PlayerMovement.Facing newFacing)
+    {
+        switch (newFacing)
+        {
+            case PlayerMovement.Facing.Up:
+                spriteOffsetControl.localPosition = upOffsetLocalPosition;
+                swordSprite.sortingOrder = -1;
+                break;
+            case PlayerMovement.Facing.Down:
+                spriteOffsetControl.localPosition = downOffsetLocalPosition;
+                swordSprite.sortingOrder = 1;
+                break;
+            case PlayerMovement.Facing.Left:
+                spriteOffsetControl.localPosition = leftOffsetLocalPosition;
+                swordSprite.sortingOrder = 0;
+                break;
+            case PlayerMovement.Facing.Right:
+                spriteOffsetControl.localPosition = rightOffsetLocalPosition;
+                swordSprite.sortingOrder = 0;
+                break;
+        }
+    }
+
 
     public enum SwordSwingState
     {

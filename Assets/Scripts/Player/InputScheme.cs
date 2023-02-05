@@ -223,6 +223,28 @@ public partial class @InputScheme : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""28133a02-1317-4582-a65c-7ea5a6dc8422"",
+                    ""path"": ""<HID::Logitech Logitech Dual Action>/trigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WeaponAttack1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52d10489-8698-486a-8a82-f784fb2a3301"",
+                    ""path"": ""<HID::Logitech Logitech Dual Action>/button2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""da93c7b5-e89d-43f7-a339-bf6ea47e28c5"",
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",

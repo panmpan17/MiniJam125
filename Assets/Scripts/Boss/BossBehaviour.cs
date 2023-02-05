@@ -15,7 +15,7 @@ public class BossBehaviour : MonoBehaviour
     [SerializeField]
     private AbstractTriggerFire[] triggerFires;
     [SerializeField]
-    private BossAttackMode[] attackModes;
+    private EventReference deadEvent;
 
     [Header("Health")]
     [SerializeField]
@@ -92,6 +92,7 @@ public class BossBehaviour : MonoBehaviour
         {
             gameObject.SetActive(false);
             healthPointPercentageUpdateEvent.Invoke(0);
+            deadEvent.Invoke();
             return;
         }
 
@@ -112,8 +113,8 @@ public class BossBehaviour : MonoBehaviour
     void ChangeStage(int stage)
     {
         _stage = stage;
-        stageEvent.Invoke(_stage);
         StartCoroutine(PauseBehaviourRunner());
+        stageEvent.Invoke(_stage);
     }
 
     IEnumerator PauseBehaviourRunner()

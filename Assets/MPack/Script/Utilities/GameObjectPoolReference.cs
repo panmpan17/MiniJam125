@@ -18,7 +18,10 @@ public class GameObjectPoolReference : ScriptableObject
     public void CreatePool()
     {
         if (_pool != null)
+        {
+            _pool.CleanUp(CreateCollection, CollectionName);
             return;
+        }
 
         _pool = new GameObjectPrefabPool(
             Prefab,

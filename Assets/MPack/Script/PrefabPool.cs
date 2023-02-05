@@ -262,5 +262,35 @@ namespace MPack {
 
             AliveObjs.Clear();
         }
+
+        public void CleanUp(bool createPoolCollection, string poolCollectionName)
+        {
+            for (int i = 0; i < AliveObjs.Count; i++)
+            {
+                if (AliveObjs[i] == null)
+                {
+                    AliveObjs.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int i = 0; i < PoolObjs.Count; i++)
+            {
+                if (PoolObjs[i] == null)
+                {
+                    PoolObjs.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            if (PoolCollection == null)
+            {
+                if (createPoolCollection)
+                {
+                    GameObject obj = new GameObject(poolCollectionName);
+                    PoolCollection = obj.transform;
+                }
+            }
+        }
     }
 }

@@ -74,8 +74,8 @@ SpriteRenderer:
   m_SortingLayerID: 1949335
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7070496928890802934, guid: 3eede7dd1f9fd42daaed05692c87fe69, type: 3}
-  m_Color: {r: 0.4433962, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: -2126246720042785711, guid: 770f0769d5b864fb79ca5f53d3cd1b85, type: 3}
+  m_Color: {r: 0.7169812, g: 0.15895337, b: 0.15895337, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -98,6 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animations:
-  - {fileID: -2531241420706614620, guid: 3eede7dd1f9fd42daaed05692c87fe69, type: 3}
+  - {fileID: 7288256451777858989, guid: 770f0769d5b864fb79ca5f53d3cd1b85, type: 3}
   light2D: {fileID: 0}
   spriteRenderer: {fileID: 6128358974313706063}

@@ -79,6 +79,7 @@ public class PlayerBehaviour : MonoBehaviour
         _input.WeaponAttack1.canceled += weapon.OnAttackCanceled;
 
         _movement.OnDashStartedEvent += OnDashStared;
+        _movement.OnFacingChanged += weapon.OnPlayerFacingChanged;
     }
 
     void OnDisable()
@@ -88,6 +89,7 @@ public class PlayerBehaviour : MonoBehaviour
         _input.WeaponAttack1.canceled -= weapon.OnAttackCanceled;
 
         _movement.OnDashStartedEvent -= OnDashStared;
+        _movement.OnFacingChanged -= weapon.OnPlayerFacingChanged;
     }
 
     void Update()
@@ -139,8 +141,6 @@ public class PlayerBehaviour : MonoBehaviour
             else
                 enegryRecoverTimer.Running = false;
         }
-        // enegryRecoverTimer
-        // enegryRecoverPauseTimer
     }
 
 
@@ -166,6 +166,7 @@ public class PlayerBehaviour : MonoBehaviour
         OnHurt.Invoke();
         invincibleAfterDamageTimer.Reset();
         Physics2D.IgnoreLayerCollision(playerLayer, enemyWeaponLayer, true);
+        perfectDashTimer.Reset();
         return true;
     }
 
@@ -185,7 +186,12 @@ public class PlayerBehaviour : MonoBehaviour
 
     void OnDashStared()
     {
-        perfectDashTimer.Reset();
+        if (perfectDashTimer.Running)
+        {
+            perfectDashTimer.Running = false;
+            HealthRecover();
+        }
+
         invincibleWhenDashing.Reset();
         Physics2D.IgnoreLayerCollision(playerLayer, enemyWeaponLayer, true);
     }
