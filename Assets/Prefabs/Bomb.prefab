@@ -175,6 +175,7 @@ MonoBehaviour:
     TargetTime: 1
     Running: 0
     ReverseMode: 0
+  impluseData: {fileID: 11400000, guid: d12962f7348204b0b8bd067e4d381be7, type: 2}
   effectLayer:
     Constant:
       serializedVersion: 2

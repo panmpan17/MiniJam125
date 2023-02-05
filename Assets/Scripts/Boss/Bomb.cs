@@ -19,6 +19,8 @@ public class Bomb : MonoBehaviour
     [SerializeField]
     private Timer waitExplodeTimer;
     private Timer _explodeDisapearTimer;
+    [SerializeField]
+    private ImpluseData impluseData;
 
     [SerializeField]
     private LayerMaskReference effectLayer;
@@ -77,15 +79,15 @@ public class Bomb : MonoBehaviour
         _state = BombState.WaitExplodeEnd;
 
         animator.Play(1);
+        if (impluseData) ImpluseCamera.ins.GenerateImpluse(impluseData);
 
-        Physics2D.OverlapCollider(explosionCollider, _contactFilter, _colliders);
-        if (_colliders[0] == null)
+        int length = Physics2D.OverlapCollider(explosionCollider, _contactFilter, _colliders);
+        if (length <= 0)
             return;
 
         var player = _colliders[0].GetComponent<PlayerBehaviour>();
         if (!player)
         {
-            Debug.Log(_colliders[0]);
             return;
         }
         player.OnTakeDamage();

@@ -16,7 +16,7 @@ ScriptedImporter:
     transparentColor: {r: 1, g: 0, b: 1, a: 1}
     meshType: 1
     extrudeEdges: 1
-    spritePivot: {x: 0.5, y: 0.5}
+    spritePivot: {x: 0.5, y: 0}
     generatePhysics: 1
     wrapMode: 1
     filterMode: 0
@@ -26,7 +26,7 @@ ScriptedImporter:
   animationSettings:
   - animationName: Swing
     loopTime: 1
-    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 6"
+    about: "Animation Type:\tForward\nAnimation:\tFrom: 0; To: 3"
   atlas: {instanceID: 0}
   importType: 0
   bindType: 0

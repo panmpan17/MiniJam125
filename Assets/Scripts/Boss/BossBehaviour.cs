@@ -26,6 +26,9 @@ public class BossBehaviour : MonoBehaviour
     [SerializeField]
     private FloatEventReference healthPointPercentageUpdateEvent;
 
+    [SerializeField]
+    private ImpluseData stageChangeImpulse;
+
     [Header("Stage")]
     [SerializeField]
     private float stageChangedWaitTime;
@@ -62,7 +65,7 @@ public class BossBehaviour : MonoBehaviour
     void OnTriggerFire(int index)
     {
         triggerFires[index].TriggerFire();
-        eyeBall.ChangeToMode((BossAttackMode) index);
+        eyeBall.ChangeToMode((BossAttackMode)(index % 4));
     }
 
     void OnFunctionCalled(string functionName)
@@ -115,6 +118,7 @@ public class BossBehaviour : MonoBehaviour
 
     IEnumerator PauseBehaviourRunner()
     {
+        if (stageChangeImpulse) ImpluseCamera.ins.GenerateImpluse(stageChangeImpulse);
         behaviourTreeRunner.enabled = false;
         yield return new WaitForSeconds(stageChangedWaitTime);
         behaviourTreeRunner.enabled = true;

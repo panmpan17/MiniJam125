@@ -10,19 +10,32 @@ public abstract class AbstractTriggerFire : MonoBehaviour
 
 public class FanSpreadBullet : AbstractTriggerFire
 {
+
+    [SerializeField]
+    [Range(0, 360)]
+    private float startAngle, endAngle;
+
+    [Header("Warning")]
+    [SerializeField]
+    private Transform warningLine;
+    [SerializeField]
+    private Timer warningTimer;
+    private bool _warning;
+
+    [Header("Shooting")]
+    [SerializeField]
+    private float turnSpeed;
+    [SerializeField]
+    private float anglePerBullet;
     [SerializeField]
     private Bullet bulletPrefab;
     [SerializeField]
     private GameObjectPoolReference gameObjectPoolReference;
     private PrefabPool<Bullet> bulletPrefabPool;
-    [SerializeField]
-    [Range(0, 360)]
-    private float startAngle, endAngle;
-    [SerializeField]
-    private float anglePerBullet;
-    [SerializeField]
-    private float turnSpeed;
     private bool _forwarding = true;
+
+    [SerializeField]
+    private ImpluseData shootImpulse;
 
     private float _zAngle;
     private float _angleTurned;
@@ -39,6 +52,32 @@ public class FanSpreadBullet : AbstractTriggerFire
     }
 
     void FixedUpdate()
+    {
+        if (_warning)
+            UpdateWarning();
+        else
+            UpdateTurnAndShoot();
+    }
+
+    void UpdateWarning()
+    {
+        if (warningTimer.UpdateEnd)
+        {
+            warningLine.gameObject.SetActive(false);
+            _warning = false;
+            return;
+        }
+
+        float z = 0;
+        if (_forwarding)
+            z = Mathf.Lerp(startAngle, endAngle, warningTimer.Progress);
+        else
+            z = Mathf.Lerp(endAngle, startAngle, warningTimer.Progress);
+
+        warningLine.rotation = Quaternion.Euler(0, 0, z);
+    }
+
+    void UpdateTurnAndShoot()
     {
         float addAmount = turnSpeed * Time.fixedDeltaTime;
 
@@ -67,6 +106,7 @@ public class FanSpreadBullet : AbstractTriggerFire
     {
         Bullet bullet = bulletPrefabPool.Get();
         bullet.Shoot(transform.position, zRotation);
+        if (shootImpulse) ImpluseCamera.ins.GenerateImpluse(shootImpulse);
     }
 
     public override void TriggerFire()
@@ -74,6 +114,10 @@ public class FanSpreadBullet : AbstractTriggerFire
         if (enabled)
             return;
         enabled = true;
+
+        _warning = true;
+        warningTimer.Reset();
+        warningLine.gameObject.SetActive(true);
 
         _zAngle = _forwarding ? startAngle : endAngle;
         _angleTurned = 0;

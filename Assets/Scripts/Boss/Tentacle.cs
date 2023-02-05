@@ -6,6 +6,8 @@ using MPack;
 public class Tentacle : MonoBehaviour
 {
     [SerializeField]
+    private ImpluseData impluseData;
+    [SerializeField]
     private GameObject warningIcon;
     [SerializeField]
     private float warningTime;
@@ -45,6 +47,8 @@ public class Tentacle : MonoBehaviour
 
                 if (!_timer.UpdateEnd)
                     break;
+
+                if (impluseData) ImpluseCamera.ins.GenerateImpluse(impluseData);
 
                 _tentacleState = TentacleState.Stay;
                 _timer.TargetTime = stayTime;

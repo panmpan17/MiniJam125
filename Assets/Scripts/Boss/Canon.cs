@@ -14,6 +14,8 @@ public class Canon : MonoBehaviour
     private Bullet bulletPrefab;
 
     [SerializeField]
+    private ImpluseData impluseData;
+    [SerializeField]
     private GameObjectPoolReference canonPrefabPool;
     [SerializeField]
     private GameObjectPoolReference gameObjectPoolReference;
@@ -60,6 +62,7 @@ public class Canon : MonoBehaviour
             bullet.Shoot(transform.position, directions[i]);
         }
 
+        if (impluseData) ImpluseCamera.ins.GenerateImpluse(impluseData);
         warning.SetActive(false);
     }
 }

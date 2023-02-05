@@ -19,7 +19,12 @@ public class Sword : AbstractWeapon
     [SerializeField]
     private Transform swingEffect;
     [SerializeField]
-    private TrailRenderer swingTrail;
+    private EffectReference swingEffects;
+    [SerializeField]
+    private EffectReference spillBlodEffect;
+    [SerializeField]
+    private Transform swingEffectSpawnPoint;
+
     [SerializeField]
     private LayerMaskReference layerMaskReference;
     [SerializeField]
@@ -46,7 +51,6 @@ public class Sword : AbstractWeapon
     void Awake()
     {
         swingEffect.gameObject.SetActive(false);
-        swingTrail.emitting = false;
 
         swordSprite.localPosition = restPose.SwordLocalPosition;
         swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
@@ -73,7 +77,6 @@ public class Sword : AbstractWeapon
                     break;
                 
                 swingEffect.gameObject.SetActive(false);
-                swingTrail.emitting = false;
 
                 _swingState = SwordSwingState.SwingWait;
                 timer.TargetTime = swingPoses[_swingAnimationIndex].SwingWait;
@@ -99,7 +102,6 @@ public class Sword : AbstractWeapon
                 swordSprite.localRotation = Quaternion.Euler(restPose.SwordLocalRotation);
 
                 swingEffect.gameObject.SetActive(false);
-                swingTrail.emitting = false;
                 break;
         }
     }
@@ -133,18 +135,31 @@ public class Sword : AbstractWeapon
         }
     }
 
-    private void Attack(float damageMultiplier)
+    void Attack(float damageMultiplier)
     {
-        Physics2D.OverlapCollider(attackCollider, _contactFilter2D, _attackTargetColliders);
-        for (int i = 0; i < _attackTargetColliders.Length; i++)
+        int length = Physics2D.OverlapCollider(attackCollider, _contactFilter2D, _attackTargetColliders);
+        for (int i = 0; i < length; i++)
         {
             if (_attackTargetColliders[i] == null)
                 return;
 
             var body = _attackTargetColliders[i].GetComponent<BossBody>();
             if (body)
+            {
                 body.OnDamage(damageMultiplier);
+                SpawnSpillBloodEffect();
+            }
+
         }
+    }
+
+    void SpawnSpillBloodEffect()
+    {
+        Vector3 position = swingEffectSpawnPoint.position;
+
+        Vector3 delta = (swordSprite.position - position);
+        Quaternion rotation = Quaternion.Euler(0, 0, Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg - 90);
+        spillBlodEffect.AddWaitingList(position, rotation);
     }
 
     void SetPose(SwingAnimation animation)
@@ -154,10 +169,14 @@ public class Sword : AbstractWeapon
 
         swordSprite.localPosition = _startPos.SwordLocalPosition;
         swordSprite.localRotation = Quaternion.Euler(_startPos.SwordLocalRotation);
-        swingEffect.localScale = _startPos.SwingEffectLocalScale;
+        // swingEffect.localScale = _startPos.SwingEffectLocalScale;
 
-        swingEffect.gameObject.SetActive(true);
-        swingTrail.emitting = true;
+        // swingEffect.gameObject.SetActive(true);
+        swingEffects.AddWaitingList(new EffectReference.EffectQueue {
+            Position = swingEffectSpawnPoint.position,
+            Rotation = transform.rotation,
+            Scale = _startPos.SwingEffectLocalScale,
+        });
 
         timer.TargetTime = animation.SwingDuration;
         timer.Reset();

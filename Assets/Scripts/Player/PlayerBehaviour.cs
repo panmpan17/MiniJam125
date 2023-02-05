@@ -12,6 +12,8 @@ public class PlayerBehaviour : MonoBehaviour
     private IntEventReference enegyEvent;
     [SerializeField]
     private EventReference deadEvent;
+    [SerializeField]
+    private ImpluseData onDeadImpluse, onDamageImpluse;
 
     [SerializeField]
     private int maxHealthPoint;
@@ -154,11 +156,13 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (_healthPoint <= 0)
         {
+            if (onDeadImpluse) ImpluseCamera.ins.GenerateImpluse(onDeadImpluse);
             gameObject.SetActive(false);
             deadEvent.Invoke();
             return true;
         }
 
+        if (onDamageImpluse) ImpluseCamera.ins.GenerateImpluse(onDamageImpluse);
         OnHurt.Invoke();
         invincibleAfterDamageTimer.Reset();
         Physics2D.IgnoreLayerCollision(playerLayer, enemyWeaponLayer, true);

@@ -602,6 +602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d1b89baf702a4ff09b00362d37932b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impluseData: {fileID: 11400000, guid: b4f3770a4483e4338970cd7b08ac9dc3, type: 2}
   warningIcon: {fileID: 1485410689096699482}
   warningTime: 1
   forwardTime: 0.6
@@ -666,5 +667,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f182b08e8bef417bb363b8b0e05fd5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damangeAmount: 0.1
+  damangeAmount: 0.3
   bossDamageEvent: {fileID: 11400000, guid: f4cb28116115a42d89e30de70ce1fdf3, type: 2}

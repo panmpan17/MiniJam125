@@ -378,6 +378,7 @@ MonoBehaviour:
   warning: {fileID: 690433082}
   animator: {fileID: 833821826099281377}
   bulletPrefab: {fileID: 4209318858229938444, guid: f16da3039ab0d4908be98c2f22bdfc94, type: 3}
+  impluseData: {fileID: 11400000, guid: 33eba3df4fa79443f87588e2aaa07c8c, type: 2}
   canonPrefabPool: {fileID: 11400000, guid: e7d3c3ddca1d6427992ba46b650c477e, type: 2}
   gameObjectPoolReference: {fileID: 11400000, guid: e25830eb61672402093e496f05ba6d59, type: 2}
   directions:

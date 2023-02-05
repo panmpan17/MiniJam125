@@ -70,6 +70,7 @@ namespace MPack
                 Position = position,
                 Rotation = rotation,
                 UseScaleTime = useScaleTime,
+                Scale = Vector3.one,
             });
         }
 
@@ -84,6 +85,7 @@ namespace MPack
             public Transform Parent;
             public Vector3 Position;
             public Quaternion Rotation;
+            public Vector3 Scale;
             public bool UseScaleTime;
         }
     }

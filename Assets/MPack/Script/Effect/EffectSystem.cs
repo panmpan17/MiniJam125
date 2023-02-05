@@ -35,6 +35,7 @@ namespace MPack
             Transform effectTransform = newEffect.transform;
             effectTransform.SetParent(effectQueue.Parent);
             effectTransform.SetPositionAndRotation(effectQueue.Position, effectQueue.Rotation);
+            effectTransform.localScale = effectQueue.Scale;
 
             ParticleSystem.MainModule main = newEffect.main;
             main.useUnscaledTime = !effectQueue.UseScaleTime;
@@ -50,6 +51,7 @@ namespace MPack
             Transform effectTransform = animator.transform;
             effectTransform.SetParent(effectQueue.Parent);
             effectTransform.SetPositionAndRotation(effectQueue.Position, effectQueue.Rotation);
+            effectTransform.localScale = effectQueue.Scale;
 
             animator.UseScaleTime = effectQueue.UseScaleTime;
 

@@ -7,10 +7,21 @@ public class BossEyeBall : MonoBehaviour
 {
     [Header("Drop & Raise")]
     [SerializeField]
+    private BossBody body;
+    [SerializeField]
     private Vector3 raisedPosition;
     [SerializeField]
+    private float raisedDamageAmount;
+    [SerializeField]
     private Vector3 droppedPosition;
+    [SerializeField]
+    private float droppedDamageAmount;
     private bool _isDropped = false;
+
+    [SerializeField]
+    private ImpluseData dropImpulse;
+    [SerializeField]
+    private ImpluseData raiseImpulse;
 
     [Header("Attack Hint")]
     [SerializeField]
@@ -22,7 +33,8 @@ public class BossEyeBall : MonoBehaviour
     [SerializeField]
     private GameObject bulletPattern;
     [SerializeField]
-    private float hideTime;
+    private Timer patternStayTimer;
+    private Coroutine _patternDisplayCoroutine;
 
     [Header("Blood")]
     [SerializeField]
@@ -57,6 +69,15 @@ public class BossEyeBall : MonoBehaviour
     private Sprite[] rightEyeWhiteSprites;
     private int _eyeWhiteIndex = 0;
 
+    [Header("Eyelid")]
+    [SerializeField]
+    private SpriteRenderer eyelid;
+    [SerializeField]
+    private Sprite[] eyelidSprites;
+    [SerializeField]
+    private Timer eyelidSwitchTimer;
+    private int eyelidIndex = 0;
+
     void OnEnable()
     {
         stageEvent.RegisterEvent(OnStageChanged);
@@ -73,28 +94,34 @@ public class BossEyeBall : MonoBehaviour
         if (x <= transform.position.x + targetEdge.Min) newEyeTarget = EyeTargetPosition.Left;
         else if (x >= transform.position.x + targetEdge.Max) newEyeTarget = EyeTargetPosition.Right;
 
-        if (newEyeTarget != _eyeTarget)
-        {
-            leftPupil.SetActive(false);
-            centerPupil.SetActive(false);
-            rightPupil.SetActive(false);
+        if (newEyeTarget == _eyeTarget)
+            return;
+        
+        if (_patternDisplayCoroutine == null)
+            MatchEyeWhitePupilToTargetPosition(newEyeTarget);
+        _eyeTarget = newEyeTarget;
+    }
 
-            switch (newEyeTarget)
-            {
-                case EyeTargetPosition.Left:
-                    eyeWhite.sprite = leftEyeWhiteSprites[_eyeWhiteIndex];
-                    leftPupil.SetActive(true);
-                    break;
-                case EyeTargetPosition.Center:
-                    eyeWhite.sprite = centerEyeWhiteSprites[_eyeWhiteIndex];
-                    centerPupil.SetActive(true);
-                    break;
-                case EyeTargetPosition.Right:
-                    eyeWhite.sprite = rightEyeWhiteSprites[_eyeWhiteIndex];
-                    rightPupil.SetActive(true);
-                    break;
-            }
-            _eyeTarget = newEyeTarget;
+    private void MatchEyeWhitePupilToTargetPosition(EyeTargetPosition newEyeTarget)
+    {
+        leftPupil.SetActive(false);
+        centerPupil.SetActive(false);
+        rightPupil.SetActive(false);
+
+        switch (newEyeTarget)
+        {
+            case EyeTargetPosition.Left:
+                eyeWhite.sprite = leftEyeWhiteSprites[_eyeWhiteIndex];
+                leftPupil.SetActive(true);
+                break;
+            case EyeTargetPosition.Center:
+                eyeWhite.sprite = centerEyeWhiteSprites[_eyeWhiteIndex];
+                centerPupil.SetActive(true);
+                break;
+            case EyeTargetPosition.Right:
+                eyeWhite.sprite = rightEyeWhiteSprites[_eyeWhiteIndex];
+                rightPupil.SetActive(true);
+                break;
         }
     }
 
@@ -105,18 +132,7 @@ public class BossEyeBall : MonoBehaviour
         if (_eyeWhiteIndex == 1) blood1.SetActive(true);
         if (_eyeWhiteIndex == 2) blood2.SetActive(true);
 
-        switch (_eyeTarget)
-        {
-            case EyeTargetPosition.Left:
-                eyeWhite.sprite = leftEyeWhiteSprites[_eyeWhiteIndex];
-                break;
-            case EyeTargetPosition.Center:
-                eyeWhite.sprite = centerEyeWhiteSprites[_eyeWhiteIndex];
-                break;
-            case EyeTargetPosition.Right:
-                eyeWhite.sprite = rightEyeWhiteSprites[_eyeWhiteIndex];
-                break;
-        }
+        MatchEyeWhitePupilToTargetPosition(_eyeTarget);
 
         if (_isDropped)
         {
@@ -126,39 +142,80 @@ public class BossEyeBall : MonoBehaviour
 
     public void ChangeToMode(BossBehaviour.BossAttackMode attackMode)
     {
-        canonPattern.SetActive(false);
-        tentaclePattern.SetActive(false);
-        bombPattern.SetActive(false);
-        bulletPattern.SetActive(false);
+        if (_patternDisplayCoroutine != null)
+        {
+            StopCoroutine(_patternDisplayCoroutine);
+        }
 
         switch (attackMode)
         {
             case BossBehaviour.BossAttackMode.Bullet:
-                bulletPattern.SetActive(true);
-                StartCoroutine(SetActive(bulletPattern, false, hideTime));
+                _patternDisplayCoroutine = StartCoroutine(DisplayPattern(bulletPattern));
                 break;
 
             case BossBehaviour.BossAttackMode.Bomb:
-                bombPattern.SetActive(true);
-                StartCoroutine(SetActive(bombPattern, false, hideTime));
+                _patternDisplayCoroutine = StartCoroutine(DisplayPattern(bombPattern));
                 break;
 
             case BossBehaviour.BossAttackMode.Tentacle:
-                tentaclePattern.SetActive(true);
-                StartCoroutine(SetActive(tentaclePattern, false, hideTime));
+                _patternDisplayCoroutine = StartCoroutine(DisplayPattern(tentaclePattern));
                 break;
 
             case BossBehaviour.BossAttackMode.Canon:
-                canonPattern.SetActive(true);
-                StartCoroutine(SetActive(canonPattern, false, hideTime));
+                _patternDisplayCoroutine = StartCoroutine(DisplayPattern(canonPattern));
                 break;
         }
     }
 
-    IEnumerator SetActive(GameObject gameObject, bool value, float delay)
+    IEnumerator DisplayPattern(GameObject pattern)
     {
-        yield return new WaitForSeconds(delay);
-        gameObject.SetActive(value);
+        WaitForSeconds wait = new WaitForSeconds(eyelidSwitchTimer.TargetTime);
+        WaitForSeconds wait2 = new WaitForSeconds(patternStayTimer.TargetTime);
+
+        eyelid.gameObject.SetActive(true);
+        eyelid.sprite = eyelidSprites[0];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[1];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[2];
+
+        eyeWhite.sprite = centerEyeWhiteSprites[_eyeWhiteIndex];
+
+        leftPupil.SetActive(false);
+        centerPupil.SetActive(false);
+        rightPupil.SetActive(false);
+
+        canonPattern.SetActive(false);
+        tentaclePattern.SetActive(false);
+        bombPattern.SetActive(false);
+        bulletPattern.SetActive(false);
+        pattern.SetActive(true);
+
+        yield return wait;
+        eyelid.sprite = eyelidSprites[1];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[0];
+        eyelid.gameObject.SetActive(false);
+
+        yield return wait2;
+
+        eyelid.gameObject.SetActive(true);
+        eyelid.sprite = eyelidSprites[0];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[1];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[2];
+
+        MatchEyeWhitePupilToTargetPosition(_eyeTarget);
+        pattern.SetActive(false);
+
+        yield return wait;
+        eyelid.sprite = eyelidSprites[1];
+        yield return wait;
+        eyelid.sprite = eyelidSprites[0];
+
+
+        _patternDisplayCoroutine = null;
     }
 
 
@@ -166,14 +223,18 @@ public class BossEyeBall : MonoBehaviour
     {
         transform.position = droppedPosition;
         _isDropped = true;
-        // body.DamageAmount = droppedDamageAmount;
+        body.DamageAmount = droppedDamageAmount;
+
+        if (dropImpulse) ImpluseCamera.ins.GenerateImpluse(dropImpulse);
     }
 
     public void Raise()
     {
         transform.position = raisedPosition;
         _isDropped = false;
-        // body.DamageAmount = raisedDamageAmount;
+        body.DamageAmount = raisedDamageAmount;
+
+        if (raiseImpulse) ImpluseCamera.ins.GenerateImpluse(raiseImpulse);
     }
 
 
