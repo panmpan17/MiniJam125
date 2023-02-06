@@ -160,8 +160,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 3
   maxCollideGroundCount: 0
+  disapearWhenHitInvinciblePlayer: 0
   rigidbody2D: {fileID: 8159991854841427945}
   poolReference: {fileID: 11400000, guid: e25830eb61672402093e496f05ba6d59, type: 2}
+  hitEffect: {fileID: 0}
+  disapearEffect: {fileID: 0}
+  hitWallSFX: {fileID: 11400000, guid: 387274a4596174d57a05de1d0b168291, type: 2}
 --- !u!61 &6180339842899211415
 BoxCollider2D:
   m_ObjectHideFlags: 0

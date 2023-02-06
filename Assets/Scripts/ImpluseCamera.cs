@@ -43,27 +43,10 @@ public class ImpluseCamera : MonoBehaviour
         transform.position = position;
     }
 
-
-    // public void GenerateImpluse(Vector2 delta, float interval, float duration)
-    // {
-    //     _delta = delta;
-    //     _intervalTimer.TargetTime = interval;
-    //     _durationTimer.TargetTime = duration;
-    //     _intervalTimer.Reset();
-    //     _durationTimer.Reset();
-    //     enabled = true;
-    // }
-
     public void GenerateImpluse(ImpluseData impluseData)
     {
-        if (enabled)
-        {
-            if (impluseData.Priority < _priority)
-            {
-                Debug.Log(impluseData);
-                return;
-            }
-        }
+        if (enabled && impluseData.Priority < _priority)
+            return;
 
         _delta = impluseData.Delta;
         _intervalTimer.TargetTime = impluseData.Interval;

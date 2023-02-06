@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8163666f541cc48258730f6c50b0251e, type: 3}
   m_Name: BossStageChange
   m_EditorClassIdentifier: 
-  Delta: {x: 0.1, y: 0.1}
+  Delta: {x: 0.2, y: 0.2}
   Interval: 0.04
-  Duration: 1
+  Duration: 2
   Priority: 6

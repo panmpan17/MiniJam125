@@ -24,6 +24,9 @@ public class Bullet : MonoBehaviour, IPoolableObj
     [SerializeField]
     private EffectReference disapearEffect;
 
+    [SerializeField]
+    private SFX hitWallSFX;
+
 
     public void DeactivateObj(Transform collectionTransform)
     {
@@ -81,6 +84,8 @@ public class Bullet : MonoBehaviour, IPoolableObj
             Vector2 normal = contactPoint2D.normal;
             disapearEffect.AddWaitingList(contactPoint2D.point, Quaternion.Euler(0, 0, Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg - 90));
         }
+
+        hitWallSFX?.Play();
     }
 
     void OnRebound(Collision2D collision)

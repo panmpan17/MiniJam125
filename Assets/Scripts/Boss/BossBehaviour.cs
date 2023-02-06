@@ -26,8 +26,6 @@ public class BossBehaviour : MonoBehaviour
     [SerializeField]
     private FloatEventReference healthPointPercentageUpdateEvent;
 
-    [SerializeField]
-    private ImpluseData stageChangeImpulse;
 
     [Header("Stage")]
     [SerializeField]
@@ -39,6 +37,13 @@ public class BossBehaviour : MonoBehaviour
     private int _stage = 0;
     [SerializeField]
     private IntEventReference stageEvent;
+
+    [SerializeField]
+    private SFX stageChangeSFX;
+    [SerializeField]
+    private SFX deadSFX;
+    [SerializeField]
+    private ImpluseData stageChangeImpulse;
 
     private Timer timer = new Timer(6);
 
@@ -90,9 +95,14 @@ public class BossBehaviour : MonoBehaviour
 
         if (_healthPoint < 0)
         {
-            gameObject.SetActive(false);
+            deadSFX?.Play();
+            eyeBall.HidePupil();
+            eyeBall.enabled = false;
             healthPointPercentageUpdateEvent.Invoke(0);
             deadEvent.Invoke();
+
+            behaviourTreeRunner.enabled = false;
+            enabled = false;
             return;
         }
 
@@ -120,6 +130,7 @@ public class BossBehaviour : MonoBehaviour
     IEnumerator PauseBehaviourRunner()
     {
         if (stageChangeImpulse) ImpluseCamera.ins.GenerateImpluse(stageChangeImpulse);
+        stageChangeSFX?.Play();
         behaviourTreeRunner.enabled = false;
         yield return new WaitForSeconds(stageChangedWaitTime);
         behaviourTreeRunner.enabled = true;

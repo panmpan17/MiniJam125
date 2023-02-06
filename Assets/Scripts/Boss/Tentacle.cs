@@ -6,7 +6,11 @@ using MPack;
 public class Tentacle : MonoBehaviour
 {
     [SerializeField]
+    private SFX shootSFX;
+    [SerializeField]
     private ImpluseData impluseData;
+    [SerializeField]
+    private SFX hitWallSFX;
     [SerializeField]
     private GameObject warningIcon;
     [SerializeField]
@@ -37,6 +41,8 @@ public class Tentacle : MonoBehaviour
 
                 warningIcon.SetActive(false);
 
+                shootSFX?.Play();
+
                 _tentacleState = TentacleState.Forward;
                 _timer.TargetTime = forwardTime;
                 _timer.Reset();
@@ -49,6 +55,7 @@ public class Tentacle : MonoBehaviour
                     break;
 
                 if (impluseData) ImpluseCamera.ins.GenerateImpluse(impluseData);
+                hitWallSFX?.Play();
 
                 _tentacleState = TentacleState.Stay;
                 _timer.TargetTime = stayTime;

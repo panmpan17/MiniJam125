@@ -36,6 +36,8 @@ public class FanSpreadBullet : AbstractTriggerFire
 
     [SerializeField]
     private ImpluseData shootImpulse;
+    [SerializeField]
+    private SFX shootSFX;
 
     private float _zAngle;
     private float _angleTurned;
@@ -107,6 +109,7 @@ public class FanSpreadBullet : AbstractTriggerFire
         Bullet bullet = bulletPrefabPool.Get();
         bullet.Shoot(transform.position, zRotation);
         if (shootImpulse) ImpluseCamera.ins.GenerateImpluse(shootImpulse);
+        shootSFX?.Play();
     }
 
     public override void TriggerFire()

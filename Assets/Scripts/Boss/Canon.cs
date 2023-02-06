@@ -16,6 +16,8 @@ public class Canon : MonoBehaviour
     [SerializeField]
     private ImpluseData impluseData;
     [SerializeField]
+    private SFX sfx;
+    [SerializeField]
     private GameObjectPoolReference canonPrefabPool;
     [SerializeField]
     private GameObjectPoolReference gameObjectPoolReference;
@@ -63,6 +65,7 @@ public class Canon : MonoBehaviour
         }
 
         if (impluseData) ImpluseCamera.ins.GenerateImpluse(impluseData);
+        sfx?.Play();
         warning.SetActive(false);
     }
 }

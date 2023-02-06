@@ -176,6 +176,7 @@ MonoBehaviour:
     Running: 0
     ReverseMode: 0
   impluseData: {fileID: 11400000, guid: d12962f7348204b0b8bd067e4d381be7, type: 2}
+  sfx: {fileID: 11400000, guid: 90c56ea99ca8b4030900042bb5e43efd, type: 2}
   effectLayer:
     Constant:
       serializedVersion: 2
@@ -301,3 +302,4 @@ MonoBehaviour:
   - {fileID: -8377887670770252534, guid: fad5d31525dff4468a651f98fb8cfff4, type: 3}
   light2D: {fileID: 0}
   spriteRenderer: {fileID: 7769133616892168800}
+  image: {fileID: 0}

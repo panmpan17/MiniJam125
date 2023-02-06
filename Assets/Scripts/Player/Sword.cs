@@ -58,6 +58,12 @@ public class Sword : AbstractWeapon
     [SerializeField]
     private Vector3 rightOffsetLocalPosition;
 
+    [Header("Audio")]
+    [SerializeField]
+    private SFX hitBoss;
+    [SerializeField]
+    private SFX hitEmpty;
+
     private SwordSwingState _swingState;
 
 
@@ -146,6 +152,14 @@ public class Sword : AbstractWeapon
     void Attack(float damageMultiplier)
     {
         int length = Physics2D.OverlapCollider(attackCollider, _contactFilter2D, _attackTargetColliders);
+
+        if (length <= 0)
+        {
+            hitEmpty?.Play();
+            return;
+        }
+        hitBoss?.Play();
+
         for (int i = 0; i < length; i++)
         {
             if (_attackTargetColliders[i] == null)

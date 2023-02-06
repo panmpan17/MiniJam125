@@ -13,6 +13,8 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField]
     private EventReference deadEvent;
     [SerializeField]
+    private EventReference winEvent;
+    [SerializeField]
     private ImpluseData onDeadImpluse, onDamageImpluse;
 
     [SerializeField]
@@ -50,6 +52,13 @@ public class PlayerBehaviour : MonoBehaviour
     private Timer invincibleWhenDashing;
     [SerializeField]
     private Timer invincibleAfterDamageTimer;
+    private bool _invincible;
+
+    [Header("Audio")]
+    [SerializeField]
+    private SFX dash;
+    [SerializeField]
+    private SFX energyEmpty, energyRefill, getHit, perfectDodge;
 
     public event System.Action OnHurt;
 
@@ -80,6 +89,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         _movement.OnDashStartedEvent += OnDashStared;
         _movement.OnFacingChanged += weapon.OnPlayerFacingChanged;
+
+        winEvent.RegisterEvent(OnWin);
     }
 
     void OnDisable()
@@ -90,6 +101,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         _movement.OnDashStartedEvent -= OnDashStared;
         _movement.OnFacingChanged -= weapon.OnPlayerFacingChanged;
+
+        winEvent.UnregisterEvent(OnWin);
     }
 
     void Update()
@@ -135,6 +148,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             _enegryPoint++;
             enegyEvent.Invoke(_enegryPoint);
+            energyRefill?.Play();
 
             if (_enegryPoint < maxEnegryPoint)
                 enegryRecoverTimer.Reset();
@@ -146,6 +160,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public bool OnTakeDamage()
     {
+        if (_invincible)
+            return true;
         if (invincibleWhenDashing.Running)
             return false;
         if (invincibleAfterDamageTimer.Running)
@@ -153,6 +169,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         _healthPoint -= 1;
         healthEvent.Invoke(_healthPoint);
+        getHit?.Play();
 
         if (_healthPoint <= 0)
         {
@@ -182,6 +199,8 @@ public class PlayerBehaviour : MonoBehaviour
             Position = transform.position,
             Rotation = Quaternion.identity
         });
+
+        perfectDodge?.Play();
     }
 
     void OnDashStared()
@@ -194,6 +213,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         invincibleWhenDashing.Reset();
         Physics2D.IgnoreLayerCollision(playerLayer, enemyWeaponLayer, true);
+
+        dash?.Play();
     }
 
     public void UseEnergy()
@@ -206,6 +227,12 @@ public class PlayerBehaviour : MonoBehaviour
         if (_enegryPoint <= 0)
         {
             enegryRecoverPauseTimer.Reset();
+            energyEmpty?.Play();
         }
+    }
+
+    void OnWin()
+    {
+        _invincible = true;
     }
 }

@@ -82,7 +82,7 @@ public class BossEyeBall : MonoBehaviour
     {
         stageEvent.RegisterEvent(OnStageChanged);
     }
-    void ONDisable()
+    void OnDisable()
     {
         stageEvent.UnregisterEvent(OnStageChanged);
     }
@@ -213,6 +213,7 @@ public class BossEyeBall : MonoBehaviour
         eyelid.sprite = eyelidSprites[1];
         yield return wait;
         eyelid.sprite = eyelidSprites[0];
+        eyelid.gameObject.SetActive(false);
 
 
         _patternDisplayCoroutine = null;
@@ -235,6 +236,18 @@ public class BossEyeBall : MonoBehaviour
         body.DamageAmount = raisedDamageAmount;
 
         if (raiseImpulse) ImpluseCamera.ins.GenerateImpluse(raiseImpulse);
+    }
+
+    public void HidePupil()
+    {
+        leftPupil.SetActive(false);
+        centerPupil.SetActive(false);
+        rightPupil.SetActive(false);
+        bulletPattern.SetActive(false);
+        tentaclePattern.SetActive(false);
+        canonPattern.SetActive(false);
+        bombPattern.SetActive(false);
+        eyelid.gameObject.SetActive(false);
     }
 
 

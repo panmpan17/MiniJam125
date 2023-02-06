@@ -379,6 +379,7 @@ MonoBehaviour:
   animator: {fileID: 833821826099281377}
   bulletPrefab: {fileID: 4209318858229938444, guid: f16da3039ab0d4908be98c2f22bdfc94, type: 3}
   impluseData: {fileID: 11400000, guid: 33eba3df4fa79443f87588e2aaa07c8c, type: 2}
+  sfx: {fileID: 11400000, guid: 778506befd3634ac381ba0e20b27637c, type: 2}
   canonPrefabPool: {fileID: 11400000, guid: e7d3c3ddca1d6427992ba46b650c477e, type: 2}
   gameObjectPoolReference: {fileID: 11400000, guid: e25830eb61672402093e496f05ba6d59, type: 2}
   directions:
@@ -491,6 +492,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a80898d7b8ce9475b99bd2420d1bb4b0, type: 2}
   light2D: {fileID: 0}
   spriteRenderer: {fileID: 979698465579937772}
+  image: {fileID: 0}
 --- !u!1 &1799731683392600323
 GameObject:
   m_ObjectHideFlags: 0
